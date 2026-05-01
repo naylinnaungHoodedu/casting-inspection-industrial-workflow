@@ -1,0 +1,95 @@
+name: Validate showcase
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install validation dependencies
+        run: python -m pip install --upgrade nbformat pypdf
+
+      - name: Validate repository package
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          import nbformat
+          from pypdf import PdfReader
+
+          root = Path(".")
+          required = [
+              "README.md",
+              "LICENSE",
+              ".gitignore",
+              "requirements.txt",
+              "environment.yml",
+              "MODEL_CARD.md",
+              "DATASET_CARD.md",
+              "CITATION.cff",
+              "Casting_Inspection_Industrial_Workflow.ipynb",
+              "Casting_Inspection_Industrial_Workflow.pdf",
+          ]
+
+          missing = [path for path in required if not (root / path).exists()]
+          if missing:
+              raise SystemExit(f"Missing required files: {missing}")
+
+          notebook_path = root / "Casting_Inspection_Industrial_Workflow.ipynb"
+          with notebook_path.open("r", encoding="utf-8") as handle:
+              json.load(handle)
+          nbformat.read(notebook_path, as_version=4)
+
+          pdf_path = root / "Casting_Inspection_Industrial_Workflow.pdf"
+          reader = PdfReader(str(pdf_path))
+          if len(reader.pages) < 40:
+              raise SystemExit(f"PDF appears incomplete: {len(reader.pages)} pages")
+
+          pdf_text = "\n".join(page.extract_text() or "" for page in reader.pages)
+          compact_pdf_text = "".join(pdf_text.split())
+          for phrase in [
+              "Automated Casting Quality Inspection Workflow",
+              "Model Card: Casting Inspection Baseline",
+              "Notebook test suite passed",
+              "Closing Engineering Notes",
+          ]:
+              if "".join(phrase.split()) not in compact_pdf_text:
+                  raise SystemExit(f"PDF is missing expected text: {phrase}")
+
+          blocked = "".join(chr(value) for value in [99, 111, 100, 101, 120])
+          text_suffixes = {
+              ".cff",
+              ".ipynb",
+              ".md",
+              ".txt",
+              ".yml",
+              ".yaml",
+          }
+          text_names = {"LICENSE", ".gitignore"}
+
+          checked = []
+          for path in root.rglob("*"):
+              if path.is_dir() or ".git" in path.parts:
+                  continue
+              if path.suffix.lower() in text_suffixes or path.name in text_names:
+                  text = path.read_text(encoding="utf-8", errors="ignore")
+                  checked.append(str(path))
+                  if blocked in text.lower():
+                      raise SystemExit(f"Blocked term found in {path}")
+
+          if blocked in pdf_text.lower():
+              raise SystemExit("Blocked term found in PDF text")
+
+          print(f"Validated {len(checked)} text files and {len(reader.pages)} PDF pages.")

@@ -1,0 +1,23 @@
+name: casting-inspection-industrial-workflow
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - jupyter
+  - nbconvert
+  - nbformat
+  - numpy
+  - pandas
+  - matplotlib
+  - scikit-learn
+  - pillow
+  - pip:
+      - opencv-python
+      - torch
+      - torchvision
+      - tqdm
+      - kagglehub
+      - onnx
+      - onnxruntime
+      - ultralytics

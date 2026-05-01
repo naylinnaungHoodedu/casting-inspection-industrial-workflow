@@ -1,0 +1,16 @@
+jupyter
+nbconvert
+nbformat
+numpy
+pandas
+matplotlib
+opencv-python
+Pillow
+scikit-learn
+torch
+torchvision
+tqdm
+kagglehub
+onnx
+onnxruntime
+ultralytics

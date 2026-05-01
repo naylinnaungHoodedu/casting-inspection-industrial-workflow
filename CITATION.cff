@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this project, please cite it as below."
+title: "Automated Casting Quality Inspection Workflow"
+authors:
+  - family-names: "Aung"
+    given-names: "Nay Linn"
+version: "1.0.0"
+date-released: "2026-05-01"
+repository-code: "https://github.com/naylinnaungHoodedu/casting-inspection-industrial-workflow"
+license: "MIT"
+keywords:
+  - "computer vision"
+  - "manufacturing"
+  - "quality inspection"
+  - "industrial AI"
+  - "PyTorch"
+  - "edge AI"

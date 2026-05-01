@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build and cache outputs
+.cache/
+.pytest_cache/
+.mypy_cache/
+dist/
+build/
+site/
+
+# Data and generated artifacts
+data/
+datasets/
+casting_data/
+artifacts/
+runs/
+models/
+checkpoints/
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.ckpt
+*.h5
+
+# Logs and reports
+*.log
+*.tmp
+*.bak
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
